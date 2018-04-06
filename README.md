@@ -1,6 +1,7 @@
-# Game24
+# Go Stop
 
-A console game made using C#, based on the traditional korean card game Go-Stop. Rules may be found here: https://www.pagat.com/fishing/gostop.html
+A console game made using C#, based on the traditional korean card game Go-Stop.
+Rules may be found here: https://www.pagat.com/fishing/gostop.html
 
 
 # Setup
