@@ -8,6 +8,8 @@ namespace Go_stop
         public List<Card> Cards { get; set; }
         public List<Card> Table { get; set; }
 
+        public Random rnd = new Random();
+
         public Deck()
         {
             Reset();
@@ -102,15 +104,22 @@ namespace Go_stop
 
         public void Shuffle()
         {
-            Random rnd = new Random();
-            for (int i = 0; i < Cards.Count; i++)
-            {
-                int otherIndex = rnd.Next(0, Cards.Count);
-                // swap card at i with card at otherIndex
-                Card temp = Cards[otherIndex];
-                Cards[otherIndex] = Cards[i];
+            //Changed to FisherYates Shuffle algorithm 
+            //there will be no redundant swiching on already sorted deck
+            for(int i = Cards.Count-1; i > 0; i--){
+                int rndIndex = rnd.Next(i);
+                Card temp = Cards[rndIndex];
+                Cards[rndIndex] = Cards[i];
                 Cards[i] = temp;
             }
+            // for (int i = 0; i < Cards.Count; i++)
+            // {
+            //     int otherIndex = rnd.Next(0, Cards.Count);
+            //     // swap card at i with card at otherIndex
+            //     Card temp = Cards[otherIndex];
+            //     Cards[otherIndex] = Cards[i];
+            //     Cards[i] = temp;
+            // }
         }
 
         //ignore this please
@@ -125,8 +134,7 @@ namespace Go_stop
 
         public void ShowTable() 
         {
-            Console.WriteLine();
-            Console.WriteLine("Table:");
+            Console.WriteLine("\nTable:");
             int count = 1;
             foreach (Card c in Table)
             {
@@ -134,6 +142,7 @@ namespace Go_stop
                 Console.WriteLine(c);
                 count++;
             }
+            Console.WriteLine("If there is no matching card Choose any card");
         }
     }
 }

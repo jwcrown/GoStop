@@ -92,7 +92,7 @@ namespace Go_stop
             else if (KwangCaptured.Count == 3){
                 foreach (Card c in KwangCaptured){
                     if (c.special == "rain"){
-                        return 0;
+                        return 2;
                     }
                     return 3;
                 }
