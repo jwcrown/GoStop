@@ -12,7 +12,7 @@ namespace Go_stop
         Player Winner;
         Deck myDeck;
 
-        public void InitializeGame()
+        public void PlayGame()
         {
             GreetPlayers();
             DealCards();
@@ -52,13 +52,11 @@ namespace Go_stop
             EnterGame();
             Console.WriteLine("Player 1 please enter your name.");
             string Player1Name = Console.ReadLine();
-            Console.WriteLine("Hello " + Player1Name + " 👋");
-            Console.WriteLine();
+            Console.WriteLine("Hello " + Player1Name + " 👋\n");
 
             System.Console.WriteLine("Player 2 please enter your name.");
             string Player2Name = Console.ReadLine();
-            System.Console.WriteLine("Hello " + Player2Name + " 👋");
-            Console.WriteLine();
+            System.Console.WriteLine("Hello " + Player2Name + " 👋\n");
 
             //Players created
             Player1 = new Player(Player1Name);
@@ -91,103 +89,78 @@ namespace Go_stop
                 CurrentPlayer = Player1;
                 return CurrentPlayer;
             }
-            else
-            {
-                CurrentPlayer = Player2;
-                return CurrentPlayer;
-            }
+            CurrentPlayer = Player2;
+            return CurrentPlayer;
         }
-        
-        //This Method needs to be refactored... To Long 
-        //Seems like most of the cases are working 
+
         public void YourTurn(Player CurrentPlayer)
         {
-            Console.WriteLine(CurrentPlayer.Name + "'s Turn. Are you ready? [y]");
+            Console.WriteLine($"\n{CurrentPlayer.Name}'s Turn. Are you ready? [y]");
             string readyPlayer = Console.ReadLine();
             if (readyPlayer != "")
             {
                 CurrentPlayer.ShowHand();
                 myDeck.ShowTable();
-                Console.WriteLine();
-                Console.WriteLine("What card will you play?");
+                Console.WriteLine("\nWhat card will you play?");
                 int PlayerMove = Int32.Parse(Console.ReadLine());
                 Console.WriteLine("Matching which card?");
                 int Match = Int32.Parse(Console.ReadLine());
+                
                 Card PlayedCard = CurrentPlayer.Hand[PlayerMove - 1];
-                DiscardCardToTable(PlayedCard);
+                DiscardCardToTable(PlayedCard); //Whenever player plays a card it will add to a table first to count matching cards easier 
                 Card FlipedCard = DealCardToTable();
 
                 //normal play: when there is only one matching(player played card & player matched card)
                 if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
                 {
-                    System.Console.WriteLine("PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month");
-                    CurrentPlayer.Claim(PlayedCard);
-                    CurrentPlayer.Claim(myDeck.Table[Match - 1]);
-                    myDeck.Table.Remove(PlayedCard);
-                    myDeck.Table.Remove(myDeck.Table[Match - 1]);
-                    if(Check4Cards(FlipedCard)!=null){
-                        foreach (Card c in Check4Cards(FlipedCard))
-                        {
-                            CurrentPlayer.Claim(c);
-                            myDeck.Table.Remove(c);
-                        }
-                    }
+                    CardClaimRemove(PlayedCard, PlayedCard);
+                    CardClaimRemove(myDeck.Table[Match - 1], myDeck.Table[Match - 1]);
+                    CheckMatchingOnTable(FlipedCard);
                 }
+                //If there is no matching card but the fliped card is matching what player played
                 else if (PlayedCard.month != myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
                 {
-                    System.Console.WriteLine("PlayedCard.month != myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month");
+                    CardClaimRemove(PlayedCard, PlayedCard);
+                    CardClaimRemove(FlipedCard, FlipedCard);
+                    CheckMatchingOnTable(FlipedCard);
 
-                    CurrentPlayer.Claim(PlayedCard);
-                    CurrentPlayer.Claim(FlipedCard);
-                    myDeck.Table.Remove(PlayedCard);
-                    myDeck.Table.Remove(FlipedCard);
-                    if(Check4Cards(FlipedCard)!=null){
-                        foreach (Card c in Check4Cards(FlipedCard))
-                        {
-                            CurrentPlayer.Claim(c);
-                            myDeck.Table.Remove(c);
-                        }
-                    }
-
-                }//if the fliped card is same month card with what player matched(Three same cards)
+                }//if the fliped card is same month card with what player matched(Three matching cards)
                 else if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
                 {
-                    System.Console.WriteLine("PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month");
                     if (Check4Cards(PlayedCard).Count == 3)
                     {
                         Console.WriteLine("Oh no...PUKK!!");
                     }
                     else
                     {
-                        foreach (Card c in Check4Cards(PlayedCard))
-                        {
-                            CurrentPlayer.Claim(c);
-                            myDeck.Table.Remove(c);
-                        }
-                    }
-
-                }else if(PlayedCard.month == myDeck.Table[Match - 1].month){
-                    if (Check4Cards(PlayedCard) != null)
-                    {
-                        foreach (Card c in Check4Cards(PlayedCard))
-                        {
-                            CurrentPlayer.Claim(c);
-                            myDeck.Table.Remove(c);
-                        }
+                        if(Check4Cards(FlipedCard).Count == 4)
+                            CheckMatchingOnTable(PlayedCard);
                     }
                 }
+                //check any matching card on table after fliped a card from the deck
                 else
                 {
-                    if (Check4Cards(FlipedCard) != null)
-                    {
-                        foreach (Card c in Check4Cards(FlipedCard))
-                        {
-                            CurrentPlayer.Claim(c);
-                            myDeck.Table.Remove(c);
-                        }
-                    }
+                    CheckMatchingOnTable(FlipedCard);
                 }
             }
+        }
+
+        public void CheckMatchingOnTable(Card card)
+        {
+            if (Check4Cards(card) != null)
+            {
+                foreach (Card c in Check4Cards(card))
+                {
+                    CardClaimRemove(c, c);
+                }
+            }
+        }
+
+        public void CardClaimRemove(Card claimC, Card removeC)
+        {
+            Console.WriteLine($"{claimC} added to {CurrentPlayer.Name}");
+            CurrentPlayer.Claim(claimC);
+            myDeck.Table.Remove(removeC);
         }
 
         public void DiscardCardToTable(Card card)
@@ -199,7 +172,7 @@ namespace Go_stop
         public Card DealCardToTable()
         {
             Card DealtCard = myDeck.Deal();
-            Console.WriteLine($"Dealt Card from the Deck: {DealtCard.ToString()}");
+            Console.WriteLine($"Dealt Card from the Deck: {DealtCard.ToString()}\n");
             myDeck.Table.Add(DealtCard);
             return DealtCard;
         }

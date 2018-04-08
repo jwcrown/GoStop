@@ -9,7 +9,7 @@ namespace Go_stop
         public static void Main(string[] args)
         {
             Game newGame = new Game();
-            newGame.InitializeGame();
+            newGame.PlayGame();
         }
     }
 }
