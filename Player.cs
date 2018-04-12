@@ -58,6 +58,10 @@ namespace Go_stop
             }
         }
 
+        public void ShowCaptured(){
+            
+        }
+
         //adds matches to player's respective captured list
         public void Claim(Card cardToClaim){
             if (cardToClaim.type == "kwang"){
