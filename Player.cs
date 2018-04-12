@@ -86,8 +86,11 @@ namespace Go_stop
         }
 
         public int CalculateKwang(){
-            if (KwangCaptured.Count > 3){
-                return KwangCaptured.Count;
+            if (KwangCaptured.Count == 5){
+                return 15;
+            }
+            else if (KwangCaptured.Count == 4){
+                return 4;
             }
             else if (KwangCaptured.Count == 3){
                 foreach (Card c in KwangCaptured){
@@ -112,7 +115,7 @@ namespace Go_stop
                 }
             }
             if (godori == 3){
-                points += 3;
+                points += 5;
             }
             return points;
         }
