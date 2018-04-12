@@ -59,7 +59,48 @@ namespace Go_stop
         }
 
         public void ShowCaptured(){
-            
+            Console.WriteLine();
+            Console.WriteLine(this.Name + "'s Captured:");
+
+            int count = 1;
+            if (KwangCaptured.Count > 0)
+                Console.WriteLine("Kwang:");
+            foreach (Card c in KwangCaptured)
+            {
+                Console.Write(count + ". ");
+                Console.WriteLine(c);
+                count++;
+            }
+
+            count = 1;
+            if (YulCaptured.Count > 0)
+                Console.WriteLine("Yul:");
+            foreach (Card c in YulCaptured)
+            {
+                Console.Write(count + ". ");
+                Console.WriteLine(c);
+                count++;
+            }
+
+            count = 1;
+            if (TtiCaptured.Count > 0)
+                Console.WriteLine("Tti:");
+            foreach (Card c in TtiCaptured)
+            {
+                Console.Write(count + ". ");
+                Console.WriteLine(c);
+                count++;
+            }
+
+            count = 1;
+            if (PiCaptured.Count > 0)
+                Console.WriteLine("Pi:");
+            foreach (Card c in PiCaptured)
+            {
+                Console.Write(count + ". ");
+                Console.WriteLine(c);
+                count++;
+            }
         }
 
         //adds matches to player's respective captured list
