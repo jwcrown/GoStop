@@ -101,6 +101,7 @@ namespace Go_stop
             {
                 CurrentPlayer.ShowHand();
                 myDeck.ShowTable();
+                CurrentPlayer.ShowCaptured();
                 Console.WriteLine("\nWhat card will you play?");
                 int PlayerMove = Int32.Parse(Console.ReadLine());
                 Console.WriteLine("Matching which card?");
