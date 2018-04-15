@@ -95,56 +95,77 @@ namespace Go_stop
 
         public void YourTurn(Player CurrentPlayer)
         {
+
             Console.WriteLine($"\n{CurrentPlayer.Name}'s Turn. Are you ready? [y]");
             string readyPlayer = Console.ReadLine();
-            if (readyPlayer != "")
+            if(readyPlayer.ToLower() == "y")
             {
                 CurrentPlayer.ShowHand();
                 myDeck.ShowTable();
                 CurrentPlayer.ShowCaptured();
-                Console.WriteLine("\nWhat card will you play?");
-                int PlayerMove = Int32.Parse(Console.ReadLine());
-                Console.WriteLine("Matching which card?");
-                int Match = Int32.Parse(Console.ReadLine());
-                
-                Card PlayedCard = CurrentPlayer.Hand[PlayerMove - 1];
-                DiscardCardToTable(PlayedCard); //Whenever player plays a card it will add to a table first to count matching cards easier 
-                Card FlipedCard = DealCardToTable();
-
-                //normal play: when there is only one matching(player played card & player matched card)
-                if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
+                int PlayerMove;
+                int Match;
+                do
                 {
-                    CardClaimRemove(PlayedCard, PlayedCard);
-                    CardClaimRemove(myDeck.Table[Match - 1], myDeck.Table[Match - 1]);
-                    CheckMatchingOnTable(FlipedCard);
-                }
-                //If there is no matching card but the fliped card is matching what player played
-                else if (PlayedCard.month != myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
-                {
-                    CardClaimRemove(PlayedCard, PlayedCard);
-                    CardClaimRemove(FlipedCard, FlipedCard);
-                    CheckMatchingOnTable(FlipedCard);
-
-                }//if the fliped card is same month card with what player matched(Three matching cards)
-                else if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
-                {
-                    if (Check4Cards(PlayedCard).Count == 3)
-                    {
-                        Console.WriteLine("Oh no...PUKK!!");
+                    Console.WriteLine("\nWhat card will you play?");
+                    try{
+                        PlayerMove = Int32.Parse(Console.ReadLine());
+                    }catch(Exception){
+                        System.Console.WriteLine("Invalid Input. Try again.");
+                        PlayerMove = -1;
                     }
+                }while (PlayerMove < 1 || PlayerMove > CurrentPlayer.Hand.Count);
+                    
+                do{
+                    Console.WriteLine("Matching which card?");
+                    try{
+                        Match = Int32.Parse(Console.ReadLine());
+                    }catch(Exception){
+                        System.Console.WriteLine("Invalid Input. Try again.");
+                        Match = -1;
+                    }
+                }while(Match < 1 || Match > myDeck.Table.Count);
+
+                    Card PlayedCard = CurrentPlayer.Hand[PlayerMove - 1];
+                    DiscardCardToTable(PlayedCard); //Whenever player plays a card it will add to a table first to count matching cards easier 
+                    Card FlipedCard = DealCardToTable();
+
+                    //normal play: when there is only one matching(player played card & player matched card)
+                    if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
+                    {
+                        CardClaimRemove(PlayedCard, PlayedCard);
+                        CardClaimRemove(myDeck.Table[Match - 1], myDeck.Table[Match - 1]);
+                        CheckMatchingOnTable(FlipedCard);
+                    }
+                    //If there is no matching card but the fliped card is matching what player played
+                    else if (PlayedCard.month != myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
+                    {
+                        CardClaimRemove(PlayedCard, PlayedCard);
+                        CardClaimRemove(FlipedCard, FlipedCard);
+                        CheckMatchingOnTable(FlipedCard);
+
+                    }//if the fliped card is same month card with what player matched(Three matching cards)
+                    else if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
+                    {
+                        if (Check4Cards(PlayedCard).Count == 3)
+                        {
+                            Console.WriteLine("Oh no...PUKK!!");
+                        }
+                        else
+                        {
+                            if (Check4Cards(FlipedCard).Count == 4)
+                                CheckMatchingOnTable(PlayedCard);
+                        }
+                    }
+                    //check any matching card on table after fliped a card from the deck
                     else
                     {
-                        if(Check4Cards(FlipedCard).Count == 4)
-                            CheckMatchingOnTable(PlayedCard);
+                        CheckMatchingOnTable(FlipedCard);
                     }
-                }
-                //check any matching card on table after fliped a card from the deck
-                else
-                {
-                    CheckMatchingOnTable(FlipedCard);
+                }else{
+                    YourTurn(CurrentPlayer);
                 }
             }
-        }
 
         public void CheckMatchingOnTable(Card card)
         {
@@ -194,6 +215,7 @@ namespace Go_stop
             }
             return null;
         }
+
         public void GoStop(int Score)
         {
             Console.WriteLine($"Your current Score is {Score}. Would you like to keep Play or Stop? Go for [1], Stop for [2]");
