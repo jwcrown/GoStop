@@ -100,7 +100,7 @@ namespace Go_stop
             string readyPlayer = Console.ReadLine();
             if(readyPlayer.ToLower() == "y")
             {
-                CurrentPlayer.ShowHand();
+                CurrentPlayer.ShowHand(CurrentPlayer.Hand);
                 myDeck.ShowTable();
                 CurrentPlayer.ShowCaptured();
                 int PlayerMove;
@@ -142,19 +142,24 @@ namespace Go_stop
                     {
                         CardClaimRemove(PlayedCard, PlayedCard);
                         CardClaimRemove(FlipedCard, FlipedCard);
-                        CheckMatchingOnTable(FlipedCard);
 
                     }//if the fliped card is same month card with what player matched(Three matching cards)
                     else if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month == FlipedCard.month)
                     {
-                        if (Check4Cards(PlayedCard).Count == 3)
+                        List<Card> matchList = Check4Cards(PlayedCard);
+                        if (matchList.Count == 3)
                         {
                             Console.WriteLine("Oh no...PUKK!!");
                         }
                         else
                         {
-                            if (Check4Cards(FlipedCard).Count == 4)
-                                CheckMatchingOnTable(PlayedCard);
+                            if (matchList.Count == 4)
+                            {
+                                foreach (Card c in matchList)
+                                {
+                                    CardClaimRemove(c ,c);
+                                }
+                            }
                         }
                     }
                     //check any matching card on table after fliped a card from the deck
@@ -169,11 +174,30 @@ namespace Go_stop
 
         public void CheckMatchingOnTable(Card card)
         {
-            if (Check4Cards(card) != null)
+            List<Card> duplicates = Check4Cards(card);
+            if (duplicates != null)
             {
-                foreach (Card c in Check4Cards(card))
+                if (duplicates.Count == 2)
                 {
-                    CardClaimRemove(c, c);
+                    foreach (Card c in duplicates)
+                    {
+                        CardClaimRemove(c ,c);
+                    }
+                }
+                else
+                {
+                    duplicates.Remove(card);
+                    CurrentPlayer.ShowHand(duplicates);
+                    int pickedCard;
+                    do{
+                        Console.WriteLine("Which card do you want to take?");
+                        pickedCard = Int32.Parse(Console.ReadLine());
+
+                    } while (pickedCard < 0 || pickedCard > duplicates.Count - 1);
+
+                    CardClaimRemove(duplicates[pickedCard - 1], duplicates[pickedCard - 1]);
+                    CardClaimRemove(card, card);
+                    
                 }
             }
         }

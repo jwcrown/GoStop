@@ -45,12 +45,12 @@ namespace Go_stop
             return playedCard;
         }
 
-        public void ShowHand() 
+        public void ShowHand(List<Card> hand) 
         {
             Console.WriteLine();
             Console.WriteLine(this.Name + "'s Hand:");
             int count = 1;
-            foreach (Card c in Hand)
+            foreach (Card c in hand)
             {
                 Console.Write(count + ". ");
                 Console.WriteLine(c);
