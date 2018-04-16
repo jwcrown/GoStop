@@ -48,7 +48,6 @@ namespace Go_stop
         public void ShowHand(List<Card> hand) 
         {
             Console.WriteLine();
-            Console.WriteLine(this.Name + "'s Hand:");
             int count = 1;
             foreach (Card c in hand)
             {

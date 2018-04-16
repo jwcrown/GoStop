@@ -100,6 +100,7 @@ namespace Go_stop
             string readyPlayer = Console.ReadLine();
             if(readyPlayer.ToLower() == "y")
             {
+                Console.WriteLine(CurrentPlayer.Name + "'s Hand:");
                 CurrentPlayer.ShowHand(CurrentPlayer.Hand);
                 myDeck.ShowTable();
                 CurrentPlayer.ShowCaptured();
@@ -129,9 +130,17 @@ namespace Go_stop
                     Card PlayedCard = CurrentPlayer.Hand[PlayerMove - 1];
                     DiscardCardToTable(PlayedCard); //Whenever player plays a card it will add to a table first to count matching cards easier 
                     Card FlipedCard = DealCardToTable();
-
+                    if (Check4Cards(PlayedCard) != null){
+                        if (Check4Cards(PlayedCard).Count == 4) //checking for Puk to claim
+                        {
+                            foreach (Card c in Check4Cards(PlayedCard))
+                                {
+                                    CardClaimRemove(c ,c);
+                                }
+                        }
+                    }
                     //normal play: when there is only one matching(player played card & player matched card)
-                    if (PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
+                    else if(PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
                     {
                         CardClaimRemove(PlayedCard, PlayedCard);
                         CardClaimRemove(myDeck.Table[Match - 1], myDeck.Table[Match - 1]);
