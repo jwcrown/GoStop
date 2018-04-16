@@ -202,7 +202,7 @@ namespace Go_stop
                         Console.WriteLine("Which card do you want to take?");
                         pickedCard = Int32.Parse(Console.ReadLine());
 
-                    } while (pickedCard < 0 || pickedCard > duplicates.Count - 1);
+                    } while (pickedCard < 0 || pickedCard > duplicates.Count);
 
                     CardClaimRemove(duplicates[pickedCard - 1], duplicates[pickedCard - 1]);
                     CardClaimRemove(card, card);
