@@ -140,7 +140,7 @@ namespace Go_stop
                         }
                     }
                     //normal play: when there is only one matching(player played card & player matched card)
-                    else if(PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
+                    if(PlayedCard.month == myDeck.Table[Match - 1].month && PlayedCard.month != FlipedCard.month)
                     {
                         CardClaimRemove(PlayedCard, PlayedCard);
                         CardClaimRemove(myDeck.Table[Match - 1], myDeck.Table[Match - 1]);
